@@ -4,6 +4,8 @@ import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
 import GameOverScreen from './components/GameOverScreen';
 import CongratulationsScreen from './components/CongratulationsScreen';
+import Footer from './components/footer';
+
 
 function App() {
   const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'gameOver', 'congrats'
@@ -15,6 +17,7 @@ function App() {
       {gameState === 'playing' && <GameScreen difficulty={difficulty} setGameState={setGameState} />}
       {gameState === 'gameOver' && <GameOverScreen setGameState={setGameState} />}
       {gameState === 'congrats' && <CongratulationsScreen setGameState={setGameState} />}
+      <Footer />
     </div>
   );
 }

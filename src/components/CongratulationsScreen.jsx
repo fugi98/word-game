@@ -115,7 +115,7 @@ const CongratulationsScreen = ({ setGameState }) => {
           textAlign: 'center',
         }}
       >
-        You have completed all levels!
+        You have completed your VerbalVoyage!
       </p>
       <button
         onClick={() => setGameState('start')}

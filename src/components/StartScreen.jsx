@@ -9,7 +9,7 @@ const StartScreen = ({ setDifficulty, setGameState }) => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold mb-6">Word Game</h1>
+      <h1 className="text-4xl font-bold mb-6">VerbalVoyage</h1>
       <div className="mb-6">
         <button
           onClick={() => handleStartGame('easy')}

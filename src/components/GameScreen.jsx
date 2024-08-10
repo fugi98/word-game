@@ -27,7 +27,7 @@ const GameScreen = ({ difficulty, setGameState }) => {
   const [letters, setLetters] = useState([]);
   const [input, setInput] = useState('');
   const [level, setLevel] = useState(1);
-  const [timeLeft, setTimeLeft] = useState(90); // Increased time to 60 seconds
+  const [timeLeft, setTimeLeft] = useState(60); // Increased time to 60 seconds
   const [backgroundImage, setBackgroundImage] = useState('');
   const [userWords, setUserWords] = useState([]);
   const [validWords, setValidWords] = useState([]);
@@ -91,7 +91,7 @@ const GameScreen = ({ difficulty, setGameState }) => {
   useEffect(() => {
     fetchWord();
     fetchBackgroundImage();
-    setTimeLeft(90); // Reset time left to 60 seconds
+    setTimeLeft(60); // Reset time left to 60 seconds
 
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
