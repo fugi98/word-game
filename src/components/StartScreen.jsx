@@ -1,7 +1,7 @@
 // src/components/StartScreen.jsx
 import React from 'react';
 
-const StartScreen = ({ setDifficulty, setGameState }) => {
+export default function StartScreen({ setDifficulty, setGameState }) {
   const handleStartGame = (difficulty) => {
     setDifficulty(difficulty);
     setGameState('playing');
@@ -34,4 +34,4 @@ const StartScreen = ({ setDifficulty, setGameState }) => {
   );
 };
 
-export default StartScreen;
+

@@ -4,7 +4,7 @@ import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
 import GameOverScreen from './components/GameOverScreen';
 import CongratulationsScreen from './components/CongratulationsScreen';
-import Footer from './components/footer';
+import Footer from './components/footer'; 
 
 
 function App() {

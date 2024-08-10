@@ -1,7 +1,7 @@
 // src/components/GameOverScreen.js
 import React from 'react';
 
-const GameOverScreen = ({ setGameState }) => {
+export default function GameOverScreen({ setGameState }){
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-4xl font-bold mb-6">Game Over</h1>
@@ -15,4 +15,4 @@ const GameOverScreen = ({ setGameState }) => {
   );
 };
 
-export default GameOverScreen;
+

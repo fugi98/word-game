@@ -4,11 +4,11 @@ import { shuffleArray } from '../utils'; // utility function for shuffling
 import styled from 'styled-components';
 
 const GameContainer = styled.div`
-  max-height: 100vh; /* Default max-height */
-  overflow: auto; /* Ensures scroll if content overflows */
-  color: #f7fafc; /* Example text color */
-  border-radius: 0.5rem; /* Example border radius */
-  padding: 1rem; /* Example padding */
+  max-height: 100vh; 
+  overflow: auto; 
+  color: #f7fafc; 
+  border-radius: 0.5rem; 
+  padding: 1rem; 
 
   @media (min-width: 1024px) {
     max-height: calc(100vh - 12rem);
@@ -23,7 +23,7 @@ const GameContainer = styled.div`
   }
 `;
 
-const GameScreen = ({ difficulty, setGameState }) => {
+export default function GameScreen({ difficulty, setGameState }) {
   const [letters, setLetters] = useState([]);
   const [input, setInput] = useState('');
   const [level, setLevel] = useState(1);
@@ -127,7 +127,7 @@ const GameScreen = ({ difficulty, setGameState }) => {
 
         setUserWords((prevWords) => [...prevWords, input]);
         setValidWords((prevWords) => [...prevWords, input]);
-        setLevelWords((prevWords) => [...prevWords, input]); // Add to levelWords
+        setLevelWords((prevWords) => [...prevWords, input]); 
         setInput('');
 
         if (userWords.length + 1 >= wordsNeeded) {
@@ -259,4 +259,4 @@ const GameScreen = ({ difficulty, setGameState }) => {
   );
 };
 
-export default GameScreen;
+

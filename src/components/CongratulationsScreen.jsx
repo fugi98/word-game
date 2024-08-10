@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const CongratulationsScreen = ({ setGameState }) => {
+export default function CongratulationsScreen({ setGameState }) {
   const containerRef = useRef(null);
   const textRef = useRef(null);
 
@@ -134,4 +134,4 @@ const CongratulationsScreen = ({ setGameState }) => {
   );
 };
 
-export default CongratulationsScreen;
+
