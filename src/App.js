@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React, { useState } from 'react';
+import StartScreen from './components/StartScreen';
+import GameScreen from './components/GameScreen';
+import GameOverScreen from './components/GameOverScreen';
+import CongratulationsScreen from './components/CongratulationsScreen';
 
 function App() {
+  const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'gameOver', 'congrats'
+  const [difficulty, setDifficulty] = useState('easy');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App min-h-screen bg-gray-900 text-white">
+      {gameState === 'start' && <StartScreen setDifficulty={setDifficulty} setGameState={setGameState} />}
+      {gameState === 'playing' && <GameScreen difficulty={difficulty} setGameState={setGameState} />}
+      {gameState === 'gameOver' && <GameOverScreen setGameState={setGameState} />}
+      {gameState === 'congrats' && <CongratulationsScreen setGameState={setGameState} />}
     </div>
   );
 }
