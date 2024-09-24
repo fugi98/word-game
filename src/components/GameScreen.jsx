@@ -35,23 +35,29 @@ export default function GameScreen({ difficulty, setGameState }) {
   const [error, setError] = useState('');
   const [levelWords, setLevelWords] = useState([]); // Track words used in the current level
 
+  const API_KEY = 'hi1tq0w1n2ru9eop69u327syy2im0utqudqb39myfwj3p301r'; // Add your Wordnik API key here
 
   // Fetch a new word and background image
   const fetchWord = async () => {
     const length = 10 + level; // Increase word length with each level
-    const response = await axios.get(`https://random-word-api.herokuapp.com/word?number=1&length=${length}`);
-    let newWord = response.data[0];
-    
-    // Ensure we have exactly 12 letters
-    let lettersArray = newWord.split('');
-    if (lettersArray.length < 12) {
-      // If fewer than 12 letters, add random letters
-      const extraLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      while (lettersArray.length < 12) {
-        lettersArray.push(extraLetters[Math.floor(Math.random() * extraLetters.length)]);
+    try {
+      const response = await axios.get(`https://api.wordnik.com/v4/words.json/randomWord?api_key=${API_KEY}&minLength=${length}&maxLength=${length}`);
+      let newWord = response.data.word;
+      
+      // Ensure we have exactly 12 letters
+      let lettersArray = newWord.split('');
+      if (lettersArray.length < 12) {
+        // If fewer than 12 letters, add random letters
+        const extraLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        while (lettersArray.length < 12) {
+          lettersArray.push(extraLetters[Math.floor(Math.random() * extraLetters.length)]);
+        }
       }
+      setLetters(shuffleArray(lettersArray));
+    } catch (error) {
+      console.error('Error fetching word:', error.response ? error.response.data : error.message);
+      setError('Error fetching word, please try again.');
     }
-    setLetters(shuffleArray(lettersArray));
   };
 
   const fetchBackgroundImage = async () => {
@@ -124,7 +130,6 @@ export default function GameScreen({ difficulty, setGameState }) {
     if (isWordValid(input) && input.length >= 3) {
       const isCorrect = await checkWordCorrectness(input);
       if (isCorrect) {
-
         setUserWords((prevWords) => [...prevWords, input]);
         setValidWords((prevWords) => [...prevWords, input]);
         setLevelWords((prevWords) => [...prevWords, input]); 
@@ -180,83 +185,80 @@ export default function GameScreen({ difficulty, setGameState }) {
       style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
     >
 
-    <GameContainer>
-      <div className="relative p-4 w-full max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl h-full max-h-[calc(100vh-2rem)] bg-gray-800 bg-opacity-70 rounded-lg shadow-lg overflow-auto">
-        {/* Error Notification */}
-        {error && (
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white p-4 rounded shadow-lg z-20">
-            {error}
-          </div>
-        )}
+      <GameContainer>
+        <div className="relative p-4 w-full max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl h-full max-h-[calc(100vh-2rem)] bg-gray-800 bg-opacity-70 rounded-lg shadow-lg overflow-auto">
+          {/* Error Notification */}
+          {error && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white p-4 rounded shadow-lg z-20">
+              {error}
+            </div>
+          )}
 
-        {/* Header with Circular Indicator and Level/Timing */}
-        <div className="flex items-center justify-between mb-4">
-          {/* Circular Indicator */}
-          <div className="flex items-center">
-            <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-gray-900 border-4 border-blue-700 rounded-full text-xl md:text-2xl text-blue-300 mr-2 md:mr-4">
-              <div>{userWords.length}/{wordsNeeded}</div>
+          {/* Header with Circular Indicator and Level/Timing */}
+          <div className="flex items-center justify-between mb-4">
+            {/* Circular Indicator */}
+            <div className="flex items-center">
+              <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-gray-900 border-4 border-blue-700 rounded-full text-xl md:text-2xl text-blue-300 mr-2 md:mr-4">
+                <div>{userWords.length}/{wordsNeeded}</div>
+              </div>
+            </div>
+            
+            {/* Level and Timer */}
+            <div className="text-center text-xs md:text-sm lg:text-base font-semibold">
+              <div>Level: {level}</div>
+              <div>Time Left: {timeLeft}s</div>
             </div>
           </div>
-          
-          {/* Level and Timer */}
-          <div className="text-center text-xs md:text-sm lg:text-base font-semibold">
-            <div>Level: {level}</div>
-            <div>Time Left: {timeLeft}s</div>
-          </div>
-        </div>
 
-        {/* Game Area */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {/* Words Found */}
-          <div className="bg-gray-900 p-3 md:p-4 rounded-lg">
-            <h4 className="text-xs md:text-sm lg:text-base font-semibold mb-2">Words Found:</h4>
-            <ul className="list-disc pl-4 text-sm md:text-base">
-              {userWords.map((word, index) => (
-                <li key={index}>{word}</li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Scrambled Letters */}
-          <div className="bg-gray-900 p-3 md:p-4 rounded-lg border border-gray-700">
-            <h3 className="text-xs md:text-sm lg:text-base mb-4">Scrambled Letters:</h3>
-            <div className="grid grid-cols-4 gap-1">
-              {letters.map((letter, index) => (
-                <div
-                  key={index}
-                  className={`w-12 h-12 flex items-center justify-center border-2 text-2xl font-bold cursor-pointer shadow-lg transition-transform transform hover:scale-105
-                    ${Math.floor(index / 4) % 2 === 0 ? 'bg-yellow-300' : 'bg-yellow-200'}
-                    border-yellow-400 text-gray-800`}
-                  onClick={() => handleLetterClick(letter)}
-                >
-                  {letter}
-                </div>
-              ))}
+          {/* Game Area */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Words Found */}
+            <div className="bg-gray-900 p-3 md:p-4 rounded-lg">
+              <h4 className="text-xs md:text-sm lg:text-base font-semibold mb-2">Words Found:</h4>
+              <ul className="list-disc pl-4 text-sm md:text-base">
+                {userWords.map((word, index) => (
+                  <li key={index}>{word}</li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Scrambled Letters */}
+            <div className="bg-gray-900 p-3 md:p-4 rounded-lg">
+              <h4 className="text-xs md:text-sm lg:text-base font-semibold mb-2">Scrambled Letters:</h4>
+              <div className="flex flex-wrap gap-2">
+                {letters.map((letter, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleLetterClick(letter)}
+                    className="bg-blue-700 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded"
+                  >
+                    {letter}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Input and Submit Button */}
-        <div className="mt-4">
-          <input
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyPress}
-            className="w-full p-2 rounded-md border border-gray-700 bg-gray-800 text-white"
-            placeholder="Type a word and press Enter..."
-          />
-          <button
-            onClick={handleSubmit}
-            className="mt-2 w-full py-2 bg-blue-600 rounded-md text-white hover:bg-blue-500"
-          >
-            Submit
-          </button>
+          {/* User Input Area */}
+          <div className="bg-gray-900 p-3 md:p-4 rounded-lg mt-4">
+            <h4 className="text-xs md:text-sm lg:text-base font-semibold mb-2">Your Word:</h4>
+            <input
+              type="text"
+              value={input}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+              className="w-full p-2 bg-gray-800 text-white rounded focus:outline-none"
+              placeholder="Type your word here..."
+            />
+            <button
+              onClick={handleSubmit}
+              className="mt-2 bg-green-600 hover:bg-green-500 text-white font-semibold py-1 px-2 rounded"
+            >
+              Submit
+            </button>
+          </div>
         </div>
-      </div>
-    </GameContainer>
+      </GameContainer>
     </div>
   );
-};
-
-
+}
